@@ -35,7 +35,6 @@ public class LoginSceneController {
 
     private Stage stage;
     private Model model;
-    private UserDoa udoa;
 
     public LoginSceneController(Stage stage, Model model) {
         this.stage = stage;

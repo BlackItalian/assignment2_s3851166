@@ -16,6 +16,7 @@ public class Model {
 
     public void setupDatabase() throws SQLException {
         userDoa.setupDatabase();
+        userDoa.populateCourseTable();
     }
 
     public UserDoa getUserDoa() {

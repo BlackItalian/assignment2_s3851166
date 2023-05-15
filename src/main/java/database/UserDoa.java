@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 public interface UserDoa {
     void setupDatabase() throws SQLException;
+    void populateCourseTable() throws SQLException;
 
     // TO DELETE AT END
     void deleteValues() throws SQLException;
