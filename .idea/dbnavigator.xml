@@ -36,10 +36,14 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="79e0493b-bcde-4609-907a-f3edf5412307" object-ref="schemas/main/tables/Courses" />
+      <object connection-id="79e0493b-bcde-4609-907a-f3edf5412307" object-ref="schemas/main/tables/Users" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="79e0493b-bcde-4609-907a-f3edf5412307" dataset="main.Courses" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="79e0493b-bcde-4609-907a-f3edf5412307" dataset="main.Users" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />

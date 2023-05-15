@@ -5,13 +5,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import main.java.database.UserDoa;
 import main.java.model.Model;
+import main.java.model.User;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -33,6 +34,9 @@ public class LoginSceneController {
     @FXML
     private TextField tfUsername;
 
+    @FXML
+    private Label lblInfo;
+
     private Stage stage;
     private Model model;
 
@@ -45,12 +49,7 @@ public class LoginSceneController {
     public void initialize() {
 
         btnSignIn.setOnAction(event -> {
-            try {
-                model.deleteValues();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            /*if (!tfUsername.getText().isEmpty() && !tfPassword.getText().isEmpty()) {
+            if (!tfUsername.getText().isEmpty() && !tfPassword.getText().isEmpty()) {
                 User user;
                 try {
                     user = model.getUserDoa().getUser(tfUsername.getText(), tfPassword.getText());
@@ -58,34 +57,32 @@ public class LoginSceneController {
                         model.setCurrentuser(user);
 
                         try {
-                            FXMLLoader loader = new FXMLLoader(
-                                    getClass().getResource("/main/resources/fxml/CanvasScene.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/MainMenuScene.fxml"));
                             Callback<Class<?>, Object> controllerFactory = param -> {
-                                return new CanvasSceneController(stage, model);
+                                return new MainMenuSceneController(stage, model);
                             };
-
                             loader.setControllerFactory(controllerFactory);
-                            AnchorPane root = loader.load();
-                            CanvasSceneController canvasSceneController = loader.getController();
-                            canvasSceneController.showStage(root);
+                            GridPane root = loader.load();
+                            MainMenuSceneController mainMenuSceneController = loader.getController();
+                            mainMenuSceneController.showStage(root);
                             tfUsername.clear();
                             tfPassword.clear();
                         } catch (Exception e) {
-                            lbl.setText(e.getMessage());
+                            lblInfo.setText(e.getMessage());
                             System.out.println(e.getMessage());
                             e.printStackTrace();
                         }
                     } else {
-                        // Show message of failed login
+                        lblInfo.setText("Invalid Credentials");
                     }
                 } catch (SQLException e) {
-                    // show message of exception
+                    e.printStackTrace();
                 }
             } else {
-                // show message of empty fields
+                lblInfo.setText("Please fill in both fields");
             }
             tfUsername.clear();
-            tfPassword.clear();*/
+            tfPassword.clear();
         });
 
         btnNewUser.setOnAction(event ->
