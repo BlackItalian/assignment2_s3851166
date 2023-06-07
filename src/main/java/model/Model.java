@@ -1,8 +1,5 @@
 package main.java.model;
 
-import main.java.database.UserDOAImplementation;
-import main.java.database.UserDoa;
-
 import java.sql.SQLException;
 
 public class Model {

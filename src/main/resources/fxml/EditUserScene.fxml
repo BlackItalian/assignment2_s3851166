@@ -49,7 +49,8 @@
             <Insets bottom="10.0" />
          </GridPane.margin>
       </TextField>
-      <Button fx:id="btnEditUser" mnemonicParsing="false" prefWidth="78.0" text="Edit User" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+      <Button fx:id="btnEditUser" mnemonicParsing="false" prefWidth="78.0" text="Edit User" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
       <Button fx:id="btnExit" mnemonicParsing="false" prefWidth="78.0" text="Exit" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+      <Button fx:id="btnCancel" mnemonicParsing="false" prefWidth="78.0" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
    </children>
 </GridPane>

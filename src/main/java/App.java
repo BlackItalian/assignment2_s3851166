@@ -7,8 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import main.java.controllers.LoginSceneController;
-import main.java.model.Model;
 
 import java.io.IOException;
 import java.sql.SQLException;

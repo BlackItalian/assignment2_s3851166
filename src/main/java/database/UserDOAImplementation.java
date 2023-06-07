@@ -1,7 +1,5 @@
 package main.java.database;
 
-import main.java.model.User;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -140,15 +138,14 @@ public class UserDOAImplementation implements UserDoa {
     public User editUser(String username, String password, String firstName, String lastName, int student_id)
             throws SQLException {
 
-        String sql = "UPDATE " + TABLE_NAME_USERS + " SET username = ?, fname = ?, lname = ?, password = ? WHERE student_id = ?";
+        String sql = "UPDATE " + TABLE_NAME_USERS + " SET fname = ?, lname = ?, password = ? WHERE student_id = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            stmt.setString(2, firstName);
-            stmt.setString(3, lastName);
-            stmt.setString(4, password);
+            stmt.setString(1, firstName);
+            stmt.setString(2, lastName);
+            stmt.setString(3, password);
             stmt.executeUpdate();
-            return new User(username, password, firstName, lastName, student_id);
+            return new User(password, firstName, lastName);
         }
     }
 
