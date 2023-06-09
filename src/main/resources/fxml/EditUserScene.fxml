@@ -50,7 +50,8 @@
          </GridPane.margin>
       </TextField>
       <Button fx:id="btnEditUser" mnemonicParsing="false" prefWidth="78.0" text="Edit User" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-      <Button fx:id="btnExit" mnemonicParsing="false" prefWidth="78.0" text="Exit" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-      <Button fx:id="btnCancel" mnemonicParsing="false" prefWidth="78.0" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+      <Button fx:id="btnExit" mnemonicParsing="false" prefWidth="78.0" text="Exit" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+      <Button fx:id="btnCancel" mnemonicParsing="false" prefWidth="78.0" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+      <Label fx:id="lblInfo" prefHeight="42.0" prefWidth="87.0" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
    </children>
 </GridPane>

@@ -1,8 +1,21 @@
 package main.java.controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+import main.java.model.Model;
+import main.java.model.User;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.InputMismatchException;
 
 public class EditUserSceneController {
 
@@ -24,6 +37,9 @@ public class EditUserSceneController {
     @FXML
     private TextField txtPassword;
 
+    @FXML
+    private Label lblInfo;
+
     private Stage stage;
     private Model model;
 
@@ -39,7 +55,7 @@ public class EditUserSceneController {
                 Platform.exit();
             });
             
-            btnCancel.setAction(event -> {
+            btnCancel.setOnAction(event -> {
             	try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/MainMenuScene.fxml"));
 
@@ -53,7 +69,7 @@ public class EditUserSceneController {
                     MainMenuSceneController mainMenuSceneController = loader.getController();
                     mainMenuSceneController.showStage(root);
 
-                } catch (IOException | SQLException e) {
+                } catch (IOException e) {
                     Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
                     stage.setTitle("Error");
                     stage.setScene(scene);
@@ -68,8 +84,8 @@ public class EditUserSceneController {
                             && !txtPassword.getText().isEmpty()) {
                         User user;
                         try {
-                            user = model.getUserDoa().editUser(txtPassword.getText(),
-                                    txtFirstName.getText(), txtLastName.getText());
+                            user = model.getUserDoa().editUser(model.getCurrentuser().getUsername(), txtPassword.getText(),
+                                    txtFirstName.getText(), txtLastName.getText(), model.getCurrentuser().getStudent_id());
 
                             if (user != null) {
                                 lblInfo.setText("Edited" + user.getUsername());
@@ -85,8 +101,8 @@ public class EditUserSceneController {
                                     GridPane root = loader.load();
 
                                     MainMenuSceneController mainMenuSceneController = loader.getController();
+                                    model.setCurrentuser(user);
                                     mainMenuSceneController.showStage(root);
-                                    System.out.println(user);
 
                                 } catch (IOException e) {
                                     Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
@@ -100,11 +116,9 @@ public class EditUserSceneController {
 
                         } catch (SQLException e) {
                             lblInfo.setText(e.getMessage());
-                            System.out.println("here");
-                            System.out.println(e);
                         }
                     } else {
-                        lblInfo.setText("Please fill out all fields to continue");
+                        lblInfo.setText("Please fill out all fields");
                     }
                 } catch (InputMismatchException e) {
                     lblInfo.setText("Invalid Input");
@@ -112,7 +126,7 @@ public class EditUserSceneController {
             });
         }
     
-    public void showStage(Pane root) {
+    public void showStage(GridPane root) {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
