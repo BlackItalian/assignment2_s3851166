@@ -12,6 +12,8 @@ import java.util.List;
 
 public class CourseDOAImplementation implements CourseDOA {
     private final String TABLE_NAME_COURSES = "Courses";
+    private final String TABLE_NAME_ENROLLEDCOURSES = "Enrolled";
+
 
     public CourseDOAImplementation() {
     }
@@ -94,8 +96,49 @@ public class CourseDOAImplementation implements CourseDOA {
                     course.setEnrolled(rs.getInt("enrolled"));
                     courseList.add(course);
                 }
+                rs.close();
                 return null;
             }
         }
+    }
+
+    public Course getSearchCourseList(List<Course> courseList, String search) throws SQLException {
+        String sql = "SELECT * FROM " + TABLE_NAME_COURSES + " WHERE coursename LIKE '%" + search + "%'";
+
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course();
+                    course.setCourse_id(rs.getInt("course_id"));
+                    course.setCourseName(rs.getString("coursename"));
+                    course.setCapacity(rs.getInt("capacity"));
+                    course.setYear(rs.getString("year"));
+                    course.setDeliveryMethod(rs.getString("delivery"));
+                    course.setDayOfLecture(rs.getString("dayoflecture"));
+                    course.setTimeOfLecture(rs.getString("timeoflecture"));
+                    course.setDurationOfLecture(rs.getDouble("durationoflecture"));
+                    course.setEnrolled(rs.getInt("enrolled"));
+                    courseList.add(course);
+                }
+                rs.close();
+                return null;
+            }
+        }
+    }
+
+    public Course changeEnrollment(String upDown, int course_id) throws SQLException {
+        System.out.println(upDown);
+        String sql = "UPDATE " + TABLE_NAME_COURSES + " SET enrolled = enrolled " + upDown + " 1 WHERE course_id = ?";
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, course_id);
+            stmt.executeUpdate();
+            System.out.println("here");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

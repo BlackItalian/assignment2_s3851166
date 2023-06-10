@@ -18,5 +18,8 @@ public interface UserDoa {
 
     User getUser(String username, String password) throws SQLException;
 
+    boolean isEnrolled(int student_id, int course_id) throws SQLException;
+
+    void enrollInCourse(int student_id, int course_id) throws SQLException;
 
 }

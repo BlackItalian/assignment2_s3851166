@@ -1,5 +1,8 @@
 package main.java.model;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 public class Course {
 
     private int course_id;
@@ -11,6 +14,7 @@ public class Course {
     private String timeOfLecture;
     private Double durationOfLecture;
     private int enrolled;
+    private BooleanProperty selected;
 
     public Course() {
     }
@@ -25,6 +29,7 @@ public class Course {
         this.timeOfLecture = timeOfLecture;
         this.durationOfLecture = durationOfLecture;
         this.enrolled = enrolled;
+        this.selected = new SimpleBooleanProperty(false);
     }
 
     @Override
@@ -102,5 +107,13 @@ public class Course {
 
     public void setEnrolled(int enrolled) {
         this.enrolled = enrolled;
+    }
+
+    public BooleanProperty isSelected() {
+        return selected;
+    }
+
+    public void setSelected(BooleanProperty selected) {
+        this.selected = selected;
     }
 }

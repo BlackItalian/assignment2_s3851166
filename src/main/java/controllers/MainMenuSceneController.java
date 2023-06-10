@@ -1,5 +1,7 @@
 package main.java.controllers;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +11,7 @@ import javafx.scene.Scene;
 
 
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -17,6 +20,7 @@ import javafx.util.Callback;
 import main.java.database.UserDOAImplementation;
 import main.java.model.Course;
 import main.java.model.Model;
+import main.java.model.User;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -54,7 +58,7 @@ public class MainMenuSceneController {
     private TableColumn<Course, Integer> columnCapacity;
 
     @FXML
-    private TableColumn<Course, CheckBox> columnCheck;
+    private TableColumn<Course, Boolean> columnCheck;
 
     @FXML
     private TableColumn<Course, String> columnCourseName;
@@ -79,6 +83,8 @@ public class MainMenuSceneController {
 
     @FXML
     private Label lblStudentId;
+    @FXML
+    private Label lblPlaceholder;
 
     @FXML
     private TableView<Course> tblCourses;
@@ -98,6 +104,8 @@ public class MainMenuSceneController {
 
     @FXML
     public void initialize() {
+
+        //Setup tableView Cells
         columnCapacity.setCellValueFactory(cellData ->
                 new SimpleObjectProperty<>(cellData.getValue().getCapacity()));
         columnCourseName.setCellValueFactory(cellData ->
@@ -112,10 +120,25 @@ public class MainMenuSceneController {
                 new SimpleObjectProperty<>(cellData.getValue().getTimeOfLecture()));
         columnYear.setCellValueFactory(cellData ->
                 new SimpleObjectProperty<>(cellData.getValue().getYear()));
+        columnCheck.setCellValueFactory(cellData -> cellData.getValue().isSelected());
+        columnCheck.setCellValueFactory(cellData -> {
+            Course course = cellData.getValue();
+            BooleanProperty selectedProperty = course.isSelected();
+
+            // Ensure that the selected property is not null
+            if (selectedProperty == null) {
+                selectedProperty = new SimpleBooleanProperty(false);
+                course.setSelected(selectedProperty);
+            }
+
+            return selectedProperty;
+        });
+
+        columnCheck.setCellFactory(CheckBoxTableCell.forTableColumn(columnCheck));
 
         //TODO
         //Grey out the Withdraw from courses button when not in the Enrolled Courses view
-        //Add tickboxes to the CheckColum of the table to allow for enrolling/withdrawing
+        //allow for withdrawing
         //Grey out and dont have available checkboxes for courses that are at capacity
         //Use the placeholder label to give confirmation messages on enrolling, withdrawing and exporting
         //Grey out enroll button when not in wither the view all course of search course view
@@ -166,7 +189,6 @@ public class MainMenuSceneController {
         });
 
         btnViewCourses.setOnAction(event -> {
-            Course course;
             List<Course> courseList = new ArrayList<>();
             try {
                 model.getCourseDOA().getFullCourseList(courseList);
@@ -178,7 +200,16 @@ public class MainMenuSceneController {
         });
 
         btnSearchCourses.setOnAction(event -> {
-
+            List<Course> courseList = new ArrayList<>();
+            String search = txtSearchCourses.getText();
+            try {
+                model.getCourseDOA().getSearchCourseList(courseList, search);
+                tblCourses.getItems().clear();
+                tblCourses.getItems().addAll(courseList);
+                txtSearchCourses.clear();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         btnEnrolledCourses.setOnAction(event -> {
@@ -186,7 +217,11 @@ public class MainMenuSceneController {
         });
 
         btnWithdrawCourses.setOnAction(event -> {
-
+            try {
+                model.getUserDoa().deleteValues();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         btnExportCourses.setOnAction(event -> {
@@ -194,7 +229,37 @@ public class MainMenuSceneController {
         });
 
         btnEnroll.setOnAction(event -> {
+            int student_id = model.getCurrentuser().getStudent_id();
+            for (Course course : tblCourses.getItems()) {
+                int course_id = 0;
+                BooleanProperty selectedProperty = course.isSelected();
+                if (selectedProperty != null && selectedProperty.get()) {
+                    course_id = course.getCourse_id();
+                    try {
+                        if (model.getUserDoa().isEnrolled(student_id, course_id)) {
+                            lblPlaceholder.setText("Student " + model.getCurrentuser().getUsername() + " is already enrolled in " + course.getCourseName());
+                            return;
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
 
+                    try {
+                        model.getUserDoa().enrollInCourse(student_id, course_id);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    lblPlaceholder.setText("Student " + student_id + " enrolled in course " + course.getCourseName());
+                    String upDown = "+";
+
+                    try {
+                        model.getCourseDOA().changeEnrollment(upDown, course.getCourse_id());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
         });
 
     }

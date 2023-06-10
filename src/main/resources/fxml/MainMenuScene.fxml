@@ -14,8 +14,8 @@
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="993.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controllers.MainMenuSceneController">
    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="627.0" minWidth="10.0" prefWidth="195.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="657.0" minWidth="10.0" prefWidth="647.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
    </columnConstraints>
    <rowConstraints>
@@ -23,12 +23,12 @@
       <RowConstraints maxHeight="583.0" minHeight="10.0" prefHeight="583.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Button fx:id="btnEditProfile" mnemonicParsing="false" text="Edit Profile" GridPane.columnIndex="2" GridPane.valignment="TOP">
+      <Button fx:id="btnEditProfile" mnemonicParsing="false" text="Edit Profile" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.valignment="TOP">
          <GridPane.margin>
-            <Insets left="50.0" top="25.0" />
+            <Insets top="25.0" />
          </GridPane.margin>
       </Button>
-      <Button fx:id="btnLogOut" mnemonicParsing="false" prefWidth="75.0" text="Log Out" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+      <Button fx:id="btnLogOut" mnemonicParsing="false" prefWidth="75.0" text="Log Out" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets right="50.0" top="25.0" />
          </GridPane.margin>
@@ -49,7 +49,7 @@
             <Insets left="25.0" top="75.0" />
          </GridPane.margin>
       </Button>
-      <TextField fx:id="txtSearchCourses" maxWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <TextField fx:id="txtSearchCourses" maxWidth="-Infinity" prefHeight="25.0" prefWidth="180.0" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets left="25.0" top="110.0" />
          </GridPane.margin>
@@ -71,26 +71,26 @@
       </Button>
       <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
       <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-      <TableView fx:id="tblCourses" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
-        <columns>
-          <TableColumn fx:id="columnCourseName" prefWidth="102.0" text="Course Name" />
-          <TableColumn fx:id="columnCapacity" prefWidth="63.0" text="Capacity" />
-            <TableColumn fx:id="columnYear" prefWidth="55.0" text="Year" />
-            <TableColumn fx:id="columnDelivery" prefWidth="119.0" text="Delivery Method" />
-            <TableColumn fx:id="columnDay" prefWidth="95.0" text="Day" />
-            <TableColumn fx:id="columnTime" prefWidth="65.0" text="Time" />
-            <TableColumn fx:id="columnDuration" prefWidth="78.0" text="Duration" />
-            <TableColumn fx:id="columnCheck" prefWidth="84.0" />
-        </columns>
-      </TableView>
-      <Label prefHeight="33.0" prefWidth="297.0" text="Placeholder" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+      <Label fx:id="lblPlaceholder" prefHeight="94.0" prefWidth="180.0" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
          <GridPane.margin>
-            <Insets top="150.0" />
+            <Insets left="25.0" top="200.0" />
          </GridPane.margin>
          <font>
             <Font size="14.0" />
          </font>
       </Label>
+      <TableView fx:id="tblCourses" editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+        <columns>
+          <TableColumn fx:id="columnCourseName" editable="false" prefWidth="182.0" text="Course Name" />
+          <TableColumn fx:id="columnCapacity" editable="false" prefWidth="72.0" text="Capacity" />
+            <TableColumn fx:id="columnYear" editable="false" prefWidth="57.0" text="Year" />
+            <TableColumn fx:id="columnDelivery" editable="false" prefWidth="127.0" text="Delivery Method" />
+            <TableColumn fx:id="columnDay" editable="false" prefWidth="104.0" text="Day" />
+            <TableColumn fx:id="columnTime" editable="false" prefWidth="71.0" text="Time" />
+            <TableColumn fx:id="columnDuration" prefWidth="83.0" text="Duration" />
+            <TableColumn fx:id="columnCheck" text="Select" />
+        </columns>
+      </TableView>
       <Button fx:id="btnEnroll" mnemonicParsing="false" text="Enroll" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets left="25.0" top="300.0" />

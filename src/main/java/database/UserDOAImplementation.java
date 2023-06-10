@@ -2,9 +2,6 @@ package main.java.database;
 
 import main.java.model.User;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.*;
 
 public class UserDOAImplementation implements UserDoa {
@@ -43,6 +40,7 @@ public class UserDOAImplementation implements UserDoa {
 
             stmt.executeUpdate(sql);
             stmt.executeUpdate(sql2);
+            stmt.executeUpdate(sql3);
         }
     }
 
@@ -52,7 +50,7 @@ public class UserDOAImplementation implements UserDoa {
     public void deleteValues() throws SQLException {
         try (Connection connection = Database.getConnection();
              Statement stmt = connection.createStatement()) {
-            String sql = "DELETE FROM " + TABLE_NAME_USERS;
+            String sql = "DELETE FROM " + TABLE_NAME_ENROLLEDCOURSES;
             stmt.executeUpdate(sql);
         }
     }
@@ -117,6 +115,35 @@ public class UserDOAImplementation implements UserDoa {
                 }
                 return null;
             }
+        }
+    }
+
+    public boolean isEnrolled(int student_id, int course_id) {
+
+        String sql = "SELECT * FROM " + TABLE_NAME_ENROLLEDCOURSES + " WHERE student_id = ? AND course_id = ?";
+
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, student_id);
+            stmt.setInt(2, course_id);
+            ResultSet resultSet = stmt.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void enrollInCourse(int student_id, int course_id) {
+        String sql = "INSERT INTO " + TABLE_NAME_ENROLLEDCOURSES + " (student_id, course_id) VALUES (?, ?)";
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, student_id);
+            statement.setInt(2, course_id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
