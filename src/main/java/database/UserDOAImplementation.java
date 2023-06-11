@@ -3,6 +3,8 @@ package main.java.database;
 import main.java.model.User;
 
 import java.sql.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class UserDOAImplementation implements UserDoa {
 
@@ -118,8 +120,48 @@ public class UserDOAImplementation implements UserDoa {
         }
     }
 
-    public boolean isEnrolled(int student_id, int course_id) {
+    public boolean checkClash(int student_id, int course_id, String newCourseDayOfLecture, String newCourseTimeOfLecture, Double newCourseDuration) {
+        String sql = "SELECT c.* FROM " + TABLE_NAME_COURSES + " c " +
+                "JOIN " + TABLE_NAME_ENROLLEDCOURSES + " ec ON c.course_id = ec.course_id " +
+                "WHERE ec.student_id = ?";
 
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, student_id);
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+                // Check for time clash
+                String existingDayOfLecture = resultSet.getString("dayoflecture");
+                String existingTimeOfLecture = resultSet.getString("timeoflecture");
+                double existingDurationOfLecture = resultSet.getDouble("durationoflecture");
+
+                // Calculate the end time of the existing lecture
+                LocalTime existingEndTime = LocalTime.parse(existingTimeOfLecture, formatter).plusMinutes((long) (existingDurationOfLecture * 60));
+
+                // Parse the new course's time and calculate the end time
+                LocalTime newCourseStartTime = LocalTime.parse(newCourseTimeOfLecture, formatter);
+                LocalTime newCourseEndTime = newCourseStartTime.plusMinutes((long) (newCourseDuration * 60));
+
+                // Check for day clash
+                if (existingDayOfLecture.equals(newCourseDayOfLecture)) {
+                    // Check for time overlap
+                    if ((newCourseStartTime.isBefore(existingEndTime) && newCourseEndTime.isAfter(LocalTime.parse(existingTimeOfLecture, formatter))) ||
+                            (newCourseStartTime.equals(existingEndTime) || newCourseEndTime.equals(existingTimeOfLecture))) {
+                        return true; // Time clash detected, student is enrolled in a course with overlapping time
+                    }
+                }
+            }
+
+            return false; // No time clash found, student is not enrolled in any conflicting course
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean isEnrolled(int student_id, int course_id) {
         String sql = "SELECT * FROM " + TABLE_NAME_ENROLLEDCOURSES + " WHERE student_id = ? AND course_id = ?";
 
         try (Connection connection = Database.getConnection();
@@ -133,6 +175,7 @@ public class UserDOAImplementation implements UserDoa {
             return false;
         }
     }
+
 
     public void enrollInCourse(int student_id, int course_id) {
         String sql = "INSERT INTO " + TABLE_NAME_ENROLLEDCOURSES + " (student_id, course_id) VALUES (?, ?)";

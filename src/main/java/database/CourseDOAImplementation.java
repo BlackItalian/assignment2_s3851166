@@ -20,7 +20,7 @@ public class CourseDOAImplementation implements CourseDOA {
 
     @Override
     public void populateCourseTable() throws SQLException {
-        int defaultValue = 0;
+        int defaultValue = 9999;
         int lineNumber = 0;
 
         //check if table is populated
@@ -73,7 +73,6 @@ public class CourseDOAImplementation implements CourseDOA {
             }
         }
     }
-    //Select * from course where student_id = currentuser.studentid in the mixed table
 
     @Override
     public Course getFullCourseList(List<Course> courseList) throws SQLException {

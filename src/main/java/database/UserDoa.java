@@ -20,6 +20,9 @@ public interface UserDoa {
 
     boolean isEnrolled(int student_id, int course_id) throws SQLException;
 
+    boolean checkClash(int student_id, int course_id, String newCourseDayOfLecture, String newCourseTimeOfLecture, Double newCourseDuration) throws SQLException;
+
+
     void enrollInCourse(int student_id, int course_id) throws SQLException;
 
     void withdrawFromCourse(int student_id, int course_id) throws SQLException;

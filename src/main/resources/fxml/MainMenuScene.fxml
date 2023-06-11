@@ -38,7 +38,7 @@
             <Insets left="15.0" />
          </GridPane.margin>
       </Label>
-      <Label fx:id="lblName" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+      <Label fx:id="lblName" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
       <Button fx:id="btnViewCourses" mnemonicParsing="false" text="View All Courses" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets left="25.0" top="25.0" />

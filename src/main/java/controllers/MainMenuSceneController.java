@@ -127,11 +127,33 @@ public class MainMenuSceneController {
             return selectedProperty;
         });
 
+        tblCourses.setRowFactory(tv -> {
+            return new TableRow<Course>() {
+                @Override
+                protected void updateItem(Course course, boolean empty) {
+                    super.updateItem(course, empty);
+
+                    if (course == null || empty) {
+                        setDisable(false);
+                        setStyle("");
+                    } else {
+                        boolean exceededCapacity = course.getEnrolled() >= course.getCapacity();
+                        setDisable(exceededCapacity);
+
+                        if (exceededCapacity) {
+                            setStyle("-fx-opacity: 0.5; -fx-background-color: #CCCCCC;");
+                        } else {
+                            setStyle("");
+                        }
+                    }
+                }
+            };
+        });
+
         columnCheck.setCellFactory(CheckBoxTableCell.forTableColumn(columnCheck));
 
         //TODO
-        //add time clashes to enrolling and check capactiy against enrolling
-        //Grey out and dont have available checkboxes for courses that are at capacity
+        //add time clashes to enrolling
         //Timetable view for enrolled
 
         btnLogOut.setOnAction(event -> {
@@ -285,9 +307,12 @@ public class MainMenuSceneController {
                 BooleanProperty selectedProperty = course.isSelected();
                 if (selectedProperty != null && selectedProperty.get()) {
                     course_id = course.getCourse_id();
+                    String newCourseDayOfLecture = course.getDayOfLecture();
+                    String newCourseTimeOfLecture = course.getTimeOfLecture();
+                    double newCourseDuration = course.getDurationOfLecture();
                     try {
-                        if (model.getUserDoa().isEnrolled(student_id, course_id)) {
-                            lblPlaceholder.setText("Student " + model.getCurrentuser().getUsername() + " is already enrolled in " + course.getCourseName());
+                        if (model.getUserDoa().checkClash(student_id, course_id, newCourseDayOfLecture, newCourseTimeOfLecture, newCourseDuration)) {
+                            lblPlaceholder.setText("Student " + model.getCurrentuser().getUsername() + " cannot enroll in " + course.getCourseName());
                             break;
                         }
                     } catch (SQLException e) {
@@ -321,7 +346,7 @@ public class MainMenuSceneController {
         stage.setTitle("Dashboard");
         stage.show();
         stage.centerOnScreen();
-        lblStudentId.setText(Integer.toString(model.getCurrentuser().getStudent_id()));
-        lblName.setText(model.getCurrentuser().getFirstName() + " " + model.getCurrentuser().getLastName());
+        lblStudentId.setText("Student_id: " + Integer.toString(model.getCurrentuser().getStudent_id()));
+        lblName.setText("Name: " + model.getCurrentuser().getFirstName() + " " + model.getCurrentuser().getLastName());
     }
 }
