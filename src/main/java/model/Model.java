@@ -38,11 +38,4 @@ public class Model {
     public CourseDOA getCourseDOA() {
         return courseDOA;
     }
-
-
-    // TO DELET AT END
-    public void deleteValues() throws SQLException {
-        userDoa.deleteValues();
-    }
-    // TO DELET AT END
 }

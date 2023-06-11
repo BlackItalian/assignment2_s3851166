@@ -1,13 +1,11 @@
 package main.java.database;
 
 import main.java.model.Course;
-import main.java.model.User;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CourseDOAImplementation implements CourseDOA {
@@ -31,7 +29,6 @@ public class CourseDOAImplementation implements CourseDOA {
             if (rs.next()) {
                 int rowCount = rs.getInt(1);
                 if (rowCount > 0) {
-                    System.out.println("Database is already populated.");
                     return;
                 }
             }

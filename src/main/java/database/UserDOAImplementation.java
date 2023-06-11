@@ -46,18 +46,6 @@ public class UserDOAImplementation implements UserDoa {
         }
     }
 
-
-    // TO DELETE AT END
-
-    public void deleteValues() throws SQLException {
-        try (Connection connection = Database.getConnection();
-             Statement stmt = connection.createStatement()) {
-            String sql = "DELETE FROM " + TABLE_NAME_ENROLLEDCOURSES;
-            stmt.executeUpdate(sql);
-        }
-    }
-    // TO DELET AT END
-
     @Override
     public User createUser(String username, String password, String firstName, String lastName)
             throws SQLException {
@@ -132,29 +120,30 @@ public class UserDOAImplementation implements UserDoa {
 
             while (resultSet.next()) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+
                 // Check for time clash
                 String existingDayOfLecture = resultSet.getString("dayoflecture");
                 String existingTimeOfLecture = resultSet.getString("timeoflecture");
                 double existingDurationOfLecture = resultSet.getDouble("durationoflecture");
 
-                // Calculate the end time of the existing lecture
+                // Calculate end time of existing lecture
                 LocalTime existingEndTime = LocalTime.parse(existingTimeOfLecture, formatter).plusMinutes((long) (existingDurationOfLecture * 60));
 
-                // Parse the new course's time and calculate the end time
+                // New course start time and end time
                 LocalTime newCourseStartTime = LocalTime.parse(newCourseTimeOfLecture, formatter);
                 LocalTime newCourseEndTime = newCourseStartTime.plusMinutes((long) (newCourseDuration * 60));
 
                 // Check for day clash
                 if (existingDayOfLecture.equals(newCourseDayOfLecture)) {
-                    // Check for time overlap
+                    // Check for time clash
                     if ((newCourseStartTime.isBefore(existingEndTime) && newCourseEndTime.isAfter(LocalTime.parse(existingTimeOfLecture, formatter))) ||
                             (newCourseStartTime.equals(existingEndTime) || newCourseEndTime.equals(existingTimeOfLecture))) {
-                        return true; // Time clash detected, student is enrolled in a course with overlapping time
+                        return true;
                     }
                 }
             }
 
-            return false; // No time clash found, student is not enrolled in any conflicting course
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

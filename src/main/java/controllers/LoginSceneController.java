@@ -69,14 +69,12 @@ public class LoginSceneController {
                             tfPassword.clear();
                         } catch (Exception e) {
                             lblInfo.setText(e.getMessage());
-                            System.out.println(e.getMessage());
-                            e.printStackTrace();
                         }
                     } else {
                         lblInfo.setText("Invalid Credentials");
                     }
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    lblInfo.setText("User not found");
                 }
             } else {
                 lblInfo.setText("Please fill in both fields");
@@ -104,8 +102,10 @@ public class LoginSceneController {
                 tfPassword.clear();
 
             } catch (IOException e) {
-                System.out.println(e.getMessage());
-                e.getStackTrace();
+                Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
+                stage.setTitle("Error");
+                stage.setScene(scene);
+                stage.show();
             }
         });
         btnExit.setOnAction(event -> {

@@ -27,7 +27,7 @@ public class EditUserSceneController {
 
     @FXML
     private Button btnCancel;
-    
+
     @FXML
     private TextField txtFirstName;
 
@@ -47,85 +47,85 @@ public class EditUserSceneController {
         this.stage = stage;
         this.model = model;
     }
-    
+
     @FXML
     public void initialize() {
-    	
-            btnExit.setOnAction(event -> {
-                Platform.exit();
-            });
-            
-            btnCancel.setOnAction(event -> {
-            	try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/MainMenuScene.fxml"));
 
-                    Callback<Class<?>, Object> controllerFactory = param -> {
-                        return new MainMenuSceneController(stage, model);
-                    };
+        btnExit.setOnAction(event -> {
+            Platform.exit();
+        });
 
-                    loader.setControllerFactory(controllerFactory);
-                    GridPane root = loader.load();
+        btnCancel.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/fxml/MainMenuScene.fxml"));
 
-                    MainMenuSceneController mainMenuSceneController = loader.getController();
-                    mainMenuSceneController.showStage(root);
+                Callback<Class<?>, Object> controllerFactory = param -> {
+                    return new MainMenuSceneController(stage, model);
+                };
 
-                } catch (IOException e) {
-                    Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
-                    stage.setTitle("Error");
-                    stage.setScene(scene);
-                    stage.show();
-                }
-            });
-            
-            btnEditUser.setOnAction(event -> {
-                try {
-                    if (!txtFirstName.getText().isEmpty()
-                            && !txtLastName.getText().isEmpty()
-                            && !txtPassword.getText().isEmpty()) {
-                        User user;
-                        try {
-                            user = model.getUserDoa().editUser(model.getCurrentuser().getUsername(), txtPassword.getText(),
-                                    txtFirstName.getText(), txtLastName.getText(), model.getCurrentuser().getStudent_id());
+                loader.setControllerFactory(controllerFactory);
+                GridPane root = loader.load();
 
-                            if (user != null) {
-                                lblInfo.setText("Edited" + user.getUsername());
-                                try {
-                                    FXMLLoader loader = new FXMLLoader(
-                                            getClass().getResource("/main/resources/fxml/MainMenuScene.fxml"));
+                MainMenuSceneController mainMenuSceneController = loader.getController();
+                mainMenuSceneController.showStage(root);
 
-                                    Callback<Class<?>, Object> controllerFactory = param -> {
-                                        return new MainMenuSceneController(stage, model);
-                                    };
+            } catch (IOException e) {
+                Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
+                stage.setTitle("Error");
+                stage.setScene(scene);
+                stage.show();
+            }
+        });
 
-                                    loader.setControllerFactory(controllerFactory);
-                                    GridPane root = loader.load();
+        btnEditUser.setOnAction(event -> {
+            try {
+                if (!txtFirstName.getText().isEmpty()
+                        && !txtLastName.getText().isEmpty()
+                        && !txtPassword.getText().isEmpty()) {
+                    User user;
+                    try {
+                        user = model.getUserDoa().editUser(model.getCurrentuser().getUsername(), txtPassword.getText(),
+                                txtFirstName.getText(), txtLastName.getText(), model.getCurrentuser().getStudent_id());
 
-                                    MainMenuSceneController mainMenuSceneController = loader.getController();
-                                    model.setCurrentuser(user);
-                                    mainMenuSceneController.showStage(root);
+                        if (user != null) {
+                            lblInfo.setText("Edited" + user.getUsername());
+                            try {
+                                FXMLLoader loader = new FXMLLoader(
+                                        getClass().getResource("/main/resources/fxml/MainMenuScene.fxml"));
 
-                                } catch (IOException e) {
-                                    Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
-                                    stage.setTitle("Error");
-                                    stage.setScene(scene);
-                                    stage.show();
-                                }
-                            } else {
-                                lblInfo.setText("Cannot edit user");
+                                Callback<Class<?>, Object> controllerFactory = param -> {
+                                    return new MainMenuSceneController(stage, model);
+                                };
+
+                                loader.setControllerFactory(controllerFactory);
+                                GridPane root = loader.load();
+
+                                MainMenuSceneController mainMenuSceneController = loader.getController();
+                                model.setCurrentuser(user);
+                                mainMenuSceneController.showStage(root);
+
+                            } catch (IOException e) {
+                                Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
+                                stage.setTitle("Error");
+                                stage.setScene(scene);
+                                stage.show();
                             }
-
-                        } catch (SQLException e) {
-                            lblInfo.setText(e.getMessage());
+                        } else {
+                            lblInfo.setText("Cannot edit user");
                         }
-                    } else {
-                        lblInfo.setText("Please fill out all fields");
+
+                    } catch (SQLException e) {
+                        lblInfo.setText("User not found");
                     }
-                } catch (InputMismatchException e) {
-                    lblInfo.setText("Invalid Input");
+                } else {
+                    lblInfo.setText("Please fill out all fields");
                 }
-            });
-        }
-    
+            } catch (InputMismatchException e) {
+                lblInfo.setText("Invalid Input");
+            }
+        });
+    }
+
     public void showStage(GridPane root) {
         Scene scene = new Scene(root);
         stage.setScene(scene);

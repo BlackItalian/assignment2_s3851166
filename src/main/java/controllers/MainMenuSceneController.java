@@ -117,8 +117,6 @@ public class MainMenuSceneController {
         columnCheck.setCellValueFactory(cellData -> {
             Course course = cellData.getValue();
             BooleanProperty selectedProperty = course.isSelected();
-
-            // Ensure that the selected property is not null
             if (selectedProperty == null) {
                 selectedProperty = new SimpleBooleanProperty(false);
                 course.setSelected(selectedProperty);
@@ -127,6 +125,7 @@ public class MainMenuSceneController {
             return selectedProperty;
         });
 
+        //Disable courses over capacity
         tblCourses.setRowFactory(tv -> {
             return new TableRow<Course>() {
                 @Override
@@ -149,12 +148,7 @@ public class MainMenuSceneController {
                 }
             };
         });
-
         columnCheck.setCellFactory(CheckBoxTableCell.forTableColumn(columnCheck));
-
-        //TODO
-        //add time clashes to enrolling
-        //Timetable view for enrolled
 
         btnLogOut.setOnAction(event -> {
             try {
@@ -209,7 +203,7 @@ public class MainMenuSceneController {
                 tblCourses.getItems().clear();
                 tblCourses.getItems().addAll(courseList);
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                lblPlaceholder.setText("Cannot get course list");
             }
         });
 
@@ -224,7 +218,7 @@ public class MainMenuSceneController {
                 tblCourses.getItems().addAll(courseList);
                 txtSearchCourses.clear();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                lblPlaceholder.setText("Cannot get course list");
             }
             if (courseList.isEmpty()) {
                 tblCourses.setPlaceholder(new Label("No results"));
@@ -241,7 +235,7 @@ public class MainMenuSceneController {
                 tblCourses.getItems().clear();
                 tblCourses.getItems().addAll(courseList);
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                lblPlaceholder.setText("Cannot get course list");
             }
             if (courseList.isEmpty()) {
                 tblCourses.setPlaceholder(new Label("Not yet enrolled in any Courses"));
@@ -296,7 +290,7 @@ public class MainMenuSceneController {
                     lblPlaceholder.setText("Enrolled courses exported to text file");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                lblPlaceholder.setText("No valid file path to export");
             }
         });
 

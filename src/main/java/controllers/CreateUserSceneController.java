@@ -3,7 +3,6 @@ package main.java.controllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -52,60 +51,59 @@ public class CreateUserSceneController {
 
     @FXML
     public void initialize() {
-            btnExit.setOnAction(event -> {
-                Platform.exit();
-            });
+        btnExit.setOnAction(event -> {
+            Platform.exit();
+        });
 
-            btnCreateUser.setOnAction(event -> {
-                try {
-                    if (!txtUsername.getText().isEmpty() && !txtFirstName.getText().isEmpty()
-                            && !txtLastName.getText().isEmpty()
-                            && !txtPassword.getText().isEmpty()) {
-                        User user;
-                        try {
-                            user = model.getUserDoa().createUser(txtUsername.getText(), txtPassword.getText(),
-                                    txtFirstName.getText(), txtLastName.getText());
+        btnCreateUser.setOnAction(event -> {
+            try {
+                if (!txtUsername.getText().isEmpty() && !txtFirstName.getText().isEmpty()
+                        && !txtLastName.getText().isEmpty()
+                        && !txtPassword.getText().isEmpty()) {
+                    User user;
+                    try {
+                        user = model.getUserDoa().createUser(txtUsername.getText(), txtPassword.getText(),
+                                txtFirstName.getText(), txtLastName.getText());
 
-                            if (user != null) {
-                                lblInfo.setText("Created" + user.getUsername());
-                                try {
-                                    FXMLLoader loader = new FXMLLoader(
-                                            getClass().getResource("/main/resources/fxml/LoginScene.fxml"));
+                        if (user != null) {
+                            lblInfo.setText("Created" + user.getUsername());
+                            try {
+                                FXMLLoader loader = new FXMLLoader(
+                                        getClass().getResource("/main/resources/fxml/LoginScene.fxml"));
 
-                                    Callback<Class<?>, Object> controllerFactory = param -> {
-                                        return new LoginSceneController(stage, model);
-                                    };
+                                Callback<Class<?>, Object> controllerFactory = param -> {
+                                    return new LoginSceneController(stage, model);
+                                };
 
-                                    loader.setControllerFactory(controllerFactory);
-                                    GridPane root = loader.load();
+                                loader.setControllerFactory(controllerFactory);
+                                GridPane root = loader.load();
 
-                                    LoginSceneController loginSceneController = loader.getController();
-                                    loginSceneController.showStage(root);
-                                    System.out.println(user);
+                                LoginSceneController loginSceneController = loader.getController();
+                                loginSceneController.showStage(root);
+                                System.out.println(user);
 
-                                } catch (IOException e) {
-                                    Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
-                                    stage.setTitle("Error");
-                                    stage.setScene(scene);
-                                    stage.show();
-                                }
-                            } else {
-                                lblInfo.setText("Cannot create user");
+                            } catch (IOException e) {
+                                Scene scene = new Scene(new Label(e.getMessage()), 200, 100);
+                                stage.setTitle("Error");
+                                stage.setScene(scene);
+                                stage.show();
                             }
-
-                        } catch (SQLException e) {
-                            lblInfo.setText(e.getMessage());
-                            System.out.println("here");
-                            System.out.println(e);
+                        } else {
+                            lblInfo.setText("Cannot create user");
                         }
-                    } else {
-                        lblInfo.setText("Please fill out all fields to continue");
+
+                    } catch (SQLException e) {
+                        lblInfo.setText("User not found");
                     }
-                } catch (InputMismatchException e) {
-                    lblInfo.setText("Invalid Input");
+                } else {
+                    lblInfo.setText("Please fill out all fields to continue");
                 }
-            });
-        }
+            } catch (InputMismatchException e) {
+                lblInfo.setText("Invalid Input");
+            }
+        });
+    }
+
     public void showStage(Pane root) {
         Scene scene = new Scene(root);
         stage.setScene(scene);

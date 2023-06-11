@@ -6,10 +6,7 @@ import java.sql.SQLException;
 
 public interface UserDoa {
     void setupDatabase() throws SQLException;
-
-    // TO DELETE AT END
-    void deleteValues() throws SQLException;
-
+    
     User createUser(String username, String password, String firstName, String lastName)
             throws SQLException;
 
