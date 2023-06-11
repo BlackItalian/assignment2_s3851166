@@ -28,8 +28,8 @@
     <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="954b3d55-aefd-43c9-90bc-5d4281fc8455">
-      <console name="Connection" type="STANDARD" schema="" session="Main" />
+    <connection id="32e8d13d-9bba-418b-a103-bd996985a92c">
+      <console name="Connection 1" type="STANDARD" schema="" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -39,9 +39,8 @@
     <open-files />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="954b3d55-aefd-43c9-90bc-5d4281fc8455" dataset="main.Courses" active-filter-id="EMPTY_FILTER" />
-    <filter-actions connection-id="954b3d55-aefd-43c9-90bc-5d4281fc8455" dataset="main.Users" active-filter-id="EMPTY_FILTER" />
-    <filter-actions connection-id="954b3d55-aefd-43c9-90bc-5d4281fc8455" dataset="main.Enrolled" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="32e8d13d-9bba-418b-a103-bd996985a92c" dataset="main.Courses" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="32e8d13d-9bba-418b-a103-bd996985a92c" dataset="main.Enrolled" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
@@ -66,9 +65,9 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="954b3d55-aefd-43c9-90bc-5d4281fc8455" active="true" signed="true">
+      <connection id="32e8d13d-9bba-418b-a103-bd996985a92c" active="true" signed="true">
         <database>
-          <name value="Connection" />
+          <name value="Connection 1" />
           <description value="" />
           <database-type value="SQLITE" />
           <config-type value="BASIC" />

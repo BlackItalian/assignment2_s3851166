@@ -13,6 +13,8 @@ public interface CourseDOA {
 
     Course getSearchCourseList(List<Course> courseList, String search) throws SQLException;
 
+    Course getEnrolledCourseList(List<Course> courseList, int student_id) throws SQLException;
+
     Course changeEnrollment(String upDown, int course_id) throws SQLException;
 
 }

@@ -22,4 +22,7 @@ public interface UserDoa {
 
     void enrollInCourse(int student_id, int course_id) throws SQLException;
 
+    void withdrawFromCourse(int student_id, int course_id) throws SQLException;
+
+
 }

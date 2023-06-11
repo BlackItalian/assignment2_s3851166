@@ -29,7 +29,7 @@ public class UserDOAImplementation implements UserDoa {
             String sql2 = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME_COURSES + " (course_id INTEGER PRIMARY KEY AUTOINCREMENT," + "coursename VARCHAR(30) NOT NULL,"
                     + "capacity INTEGER DEFAULT NULL," + "year VARCHAR(8) NOT NULL," + "delivery VARCHAR(14) NOT NULL,"
                     + "dayoflecture VARCHAR(12) NOT NULL," + "timeoflecture TEXT NOT NULL,"
-                    + "durationoflecture DOUBLE NOT NULL," + "enrolled INTEGER)";
+                    + "durationoflecture DOUBLE NOT NULL," + "enrolled INTEGER DEFAULT 0)";
 
             //Create table for storing users enrolled courses
 
@@ -136,6 +136,19 @@ public class UserDOAImplementation implements UserDoa {
 
     public void enrollInCourse(int student_id, int course_id) {
         String sql = "INSERT INTO " + TABLE_NAME_ENROLLEDCOURSES + " (student_id, course_id) VALUES (?, ?)";
+        try (Connection connection = Database.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, student_id);
+            statement.setInt(2, course_id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void withdrawFromCourse(int student_id, int course_id) {
+        String sql = "DELETE FROM " + TABLE_NAME_ENROLLEDCOURSES + " WHERE student_id = ? AND course_id = ?";
         try (Connection connection = Database.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             PreparedStatement statement = connection.prepareStatement(sql);

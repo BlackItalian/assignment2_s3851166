@@ -3,8 +3,6 @@ package main.java.controllers;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,22 +10,19 @@ import javafx.scene.Scene;
 
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import main.java.database.UserDOAImplementation;
 import main.java.model.Course;
 import main.java.model.Model;
-import main.java.model.User;
 
+import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.ResultSet;
+import java.io.BufferedWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.CheckedOutputStream;
 
 public class MainMenuSceneController {
     @FXML
@@ -92,10 +87,8 @@ public class MainMenuSceneController {
     @FXML
     private TextField txtSearchCourses;
 
-    private ObservableList<Course> courseList = FXCollections.observableArrayList();
-
-    private Stage stage;
-    private Model model;
+    private final Stage stage;
+    private final Model model;
 
     public MainMenuSceneController(Stage stage, Model model) {
         this.stage = stage;
@@ -137,12 +130,9 @@ public class MainMenuSceneController {
         columnCheck.setCellFactory(CheckBoxTableCell.forTableColumn(columnCheck));
 
         //TODO
-        //Grey out the Withdraw from courses button when not in the Enrolled Courses view
-        //allow for withdrawing
+        //add time clashes to enrolling and check capactiy against enrolling
         //Grey out and dont have available checkboxes for courses that are at capacity
-        //Use the placeholder label to give confirmation messages on enrolling, withdrawing and exporting
-        //Grey out enroll button when not in wither the view all course of search course view
-        //Enroll button checks for checkbox inside the last colum of the table
+        //Timetable view for enrolled
 
         btnLogOut.setOnAction(event -> {
             try {
@@ -189,6 +179,8 @@ public class MainMenuSceneController {
         });
 
         btnViewCourses.setOnAction(event -> {
+            btnWithdrawCourses.setDisable(true);
+            btnEnroll.setDisable(false);
             List<Course> courseList = new ArrayList<>();
             try {
                 model.getCourseDOA().getFullCourseList(courseList);
@@ -200,6 +192,8 @@ public class MainMenuSceneController {
         });
 
         btnSearchCourses.setOnAction(event -> {
+            btnWithdrawCourses.setDisable(true);
+            btnEnroll.setDisable(false);
             List<Course> courseList = new ArrayList<>();
             String search = txtSearchCourses.getText();
             try {
@@ -210,22 +204,78 @@ public class MainMenuSceneController {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        });
-
-        btnEnrolledCourses.setOnAction(event -> {
-
-        });
-
-        btnWithdrawCourses.setOnAction(event -> {
-            try {
-                model.getUserDoa().deleteValues();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            if (courseList.isEmpty()) {
+                tblCourses.setPlaceholder(new Label("No results"));
             }
         });
 
-        btnExportCourses.setOnAction(event -> {
+        btnEnrolledCourses.setOnAction(event -> {
+            btnWithdrawCourses.setDisable(false);
+            btnEnroll.setDisable(true);
+            List<Course> courseList = new ArrayList<>();
+            int student_id = model.getCurrentuser().getStudent_id();
+            try {
+                model.getCourseDOA().getEnrolledCourseList(courseList, student_id);
+                tblCourses.getItems().clear();
+                tblCourses.getItems().addAll(courseList);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            if (courseList.isEmpty()) {
+                tblCourses.setPlaceholder(new Label("Not yet enrolled in any Courses"));
+            }
+        });
 
+        btnWithdrawCourses.setOnAction(event -> {
+            int student_id = model.getCurrentuser().getStudent_id();
+            for (Course course : tblCourses.getItems()) {
+                int course_id = 0;
+                BooleanProperty selectedProperty = course.isSelected();
+                if (selectedProperty != null && selectedProperty.get()) {
+                    course_id = course.getCourse_id();
+                    try {
+                        if (model.getUserDoa().isEnrolled(student_id, course_id)) {
+                            try {
+                                model.getUserDoa().withdrawFromCourse(student_id, course_id);
+                                lblPlaceholder.setText("Student " + model.getCurrentuser().getUsername() + " has withdrawn from " + course.getCourseName());
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                            String upDown = "-";
+                            try {
+                                model.getCourseDOA().changeEnrollment(upDown, course.getCourse_id());
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            btnEnrolledCourses.fire();
+        });
+
+        btnExportCourses.setOnAction(event -> {
+            List<Course> courseList = new ArrayList<>();
+            int student_id = model.getCurrentuser().getStudent_id();
+            try {
+                model.getCourseDOA().getEnrolledCourseList(courseList, student_id);
+                tblCourses.getItems().clear();
+                tblCourses.getItems().addAll(courseList);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/exports/enrolledCourses.txt", false))) {
+                for (Course course : courseList) {
+                    String courseData = String.join(",", Integer.toString(course.getCourse_id()), course.getCourseName(), Integer.toString(course.getCapacity()), course.getYear(), course.getDeliveryMethod(), course.getDayOfLecture(), course.getTimeOfLecture(), Double.toString(course.getDurationOfLecture()));
+                    writer.write(courseData);
+                    writer.newLine();
+                    lblPlaceholder.setText("Enrolled courses exported to text file");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         btnEnroll.setOnAction(event -> {
@@ -238,7 +288,7 @@ public class MainMenuSceneController {
                     try {
                         if (model.getUserDoa().isEnrolled(student_id, course_id)) {
                             lblPlaceholder.setText("Student " + model.getCurrentuser().getUsername() + " is already enrolled in " + course.getCourseName());
-                            return;
+                            break;
                         }
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
